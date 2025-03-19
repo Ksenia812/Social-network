@@ -26,9 +26,12 @@ public class UserEntity implements UserDetails {
     private String surname;
     @Column
     private String email;
+    @Column
+    private String login;
+    @Column
+    private String password;
     @Column(name = "birth_date")
     private LocalDate birthDate;
-    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRoleEntity userRole;
 
@@ -49,21 +52,21 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
