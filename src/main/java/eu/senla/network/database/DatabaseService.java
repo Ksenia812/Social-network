@@ -5,5 +5,6 @@ import eu.senla.network.domains.entities.UserEntity;
 import java.util.Optional;
 
 public interface DatabaseService {
-    UserEntity getUserByLogin(String login);
+    Optional<UserEntity> getUserByLogin(String login);
+    UserEntity saveUserEntity(UserEntity user);
 }

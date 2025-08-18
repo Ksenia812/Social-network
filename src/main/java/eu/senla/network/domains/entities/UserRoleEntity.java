@@ -12,9 +12,6 @@ public enum UserRoleEntity implements GrantedAuthority {
         this.role = role;
     }
 
-    public String getValue() {
-        return role;
-    }
 
     @Override
     public String getAuthority() {

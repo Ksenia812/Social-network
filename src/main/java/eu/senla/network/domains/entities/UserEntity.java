@@ -8,14 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Table(name = "user")
+@Table(name = "user",schema = "network")
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -32,22 +31,20 @@ public class UserEntity implements UserDetails {
     private String password;
     @Column(name = "birth_date")
     private LocalDate birthDate;
-    @Column(name = "role", nullable = false)
-    private UserRoleEntity userRole;
+    @ElementCollection(targetClass = UserRoleEntity.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Set<UserRoleEntity> userRoles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return login;
     }
 
     @Override
