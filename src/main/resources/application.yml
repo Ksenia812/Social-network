@@ -2,32 +2,47 @@ server:
   port: 8080
 
 spring:
-  application:
-    name: network
-    datasource-partner:
-      driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5432/postgres
-      username: postgres
-      password: postgres
-      connection-timeout: 10000
-      maximum-pool-size: 2
-      pool-name: datasource-pool-${spring.application.name}
-      data-source-properties:
-        ApplicationName: ${spring.application.name}
+  #application:
+  #  name:
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/mydb
+    username: postgres
+    password: postgres
+    connection-timeout: 10000
+    maximum-pool-size: 2
+    pool-name: datasource-pool-${spring.application.name}
+    data-source-properties:
+      ApplicationName: ${spring.application.name}
   jpa:
-    open-in-view: false
-    show-sql: true
-    properties:
-      hibernate:
-        ddl-auto: none
-        format_sql: true
-        generate_statistics: false
-        default_schema: network
-        jdbc.batch_size: 1
-        order_inserts: true
-        order_updates: true
-        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+  open-in-view: false
+  show-sql: true
+  properties:
+    hibernate:
+      ddl-auto: create
+      format_sql: true
+      generate_statistics: false
+      default_schema: network
+      jdbc.batch_size: 1
+      order_inserts: true
+      order_updates: true
+      implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+      physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
   liquibase:
     change-log: classpath:changelog
+
+
+security:
+  jwt:
+    token:
+      access-key: ${SECRET_ACCESS}
+      refresh-key: ${SECRET_REFRESH}
+logging:
+  level:
+    eu.senla.network: TRACE
+    org.hibernate: TRACE
+    org.hibernate.type.descriptor.sql: TRACE
+    org.hibernate.sql: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
