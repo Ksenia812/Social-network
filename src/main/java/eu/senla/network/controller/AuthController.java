@@ -1,7 +1,7 @@
 package eu.senla.network.controller;
 
-import eu.senla.network.exceptions.AuthException;
 import eu.senla.network.exceptions.DuplicateUserException;
+import eu.senla.network.exceptions.UnauthorizedException;
 import eu.senla.network.models.dto.JwtRequestDto;
 import eu.senla.network.models.dto.JwtResponseDto;
 import eu.senla.network.models.dto.RefreshJwtRequestDto;
@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
     private final AuthService authService;
 
     @PostMapping(
-            path = "/signIn", produces = {MediaType.APPLICATION_JSON_VALUE}
+            path = "/login", produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<JwtResponseDto> signIn(@RequestBody JwtRequestDto authRequest) {
         log.debug("Login request received: {}", authRequest);
@@ -35,27 +35,23 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/accessToken")
+    @PostMapping("/token")
     public ResponseEntity<JwtResponseDto> getNewAccessToken(@RequestBody RefreshJwtRequestDto request) {
-        try {
-            JwtResponseDto jwtResponse = authService.getAccessToken(request.refreshToken);
-            return ResponseEntity.ok(jwtResponse);
-        } catch (AuthException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        JwtResponseDto jwtResponse = authService.getAccessToken(request.refreshToken());
+        return ResponseEntity.ok(jwtResponse);
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/token/refresh")
     public ResponseEntity<JwtResponseDto> getNewRefreshToken(@RequestBody RefreshJwtRequestDto request) {
         try {
-            JwtResponseDto jwtResponse = authService.refresh(request.refreshToken);
+            JwtResponseDto jwtResponse = authService.refresh(request.refreshToken());
             return ResponseEntity.ok(jwtResponse);
-        } catch (AuthException e) {
+        } catch (UnauthorizedException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
-    @PostMapping("/signUp")
+    @PostMapping("/register")
     public ResponseEntity<Object> signUpUser(@RequestBody SignUpDto signUpDto) {
         try {
             UserDetails userDetails = authService.signUp(signUpDto);

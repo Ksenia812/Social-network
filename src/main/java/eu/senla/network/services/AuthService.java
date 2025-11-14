@@ -2,7 +2,7 @@ package eu.senla.network.services;
 
 import eu.senla.network.domains.entities.UserEntity;
 import eu.senla.network.domains.entities.UserRoleEntity;
-import eu.senla.network.exceptions.AuthException;
+import eu.senla.network.exceptions.UnauthorizedException;
 import eu.senla.network.exceptions.DuplicateUserException;
 import eu.senla.network.exceptions.UserNotFoundException;
 import eu.senla.network.mapper.UserMapper;
@@ -113,7 +113,7 @@ public class AuthService {
                         .build();
             }
         }
-        throw new AuthException("Jwt token is invalid ");
+        throw new UnauthorizedException("Jwt token is invalid ");
     }
 
     public JwtAuthentication getAuthInfo() {
