@@ -1,5 +1,6 @@
 package eu.senla.network.controller;
 
+import eu.senla.network.exceptions.DuplicateUserException;
 import eu.senla.network.exceptions.UnauthorizedException;
 import eu.senla.network.models.dto.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Optional;
-
 @Slf4j
-@ControllerAdvice(assignableTypes = {AuthController.class})
+@ControllerAdvice(assignableTypes = {AuthControllerImpl.class})
 public class SocialNetworkExceptionHandler {
 
 
@@ -21,6 +20,13 @@ public class SocialNetworkExceptionHandler {
         logException(e, code);
         ErrorResponseDto errorResponseDto = prepareErrorResponseBody(code, e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDto);
+    }
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<ErrorResponseDto> handleException(DuplicateUserException e) {
+        String code = "DUPLICATE_USER_ERROR";
+        logException(e, code);
+        ErrorResponseDto errorResponseDto = prepareErrorResponseBody(code, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDto);
     }
 
     private void logException(Exception e, String errorCode) {
